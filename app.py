@@ -15,10 +15,11 @@ def inject_now():
 # ============================================
 def get_db():
     return mysql.connector.connect(
-        host="localhost",
+        host="viaduct.proxy.rlwy.net",
+        port=30514,
         user="root",
-        password="",
-        database="hospital_v2"
+        password="ZzETMKDuAMkbXFdjhtRAVDSkTVtpkAIV",
+        database="railway"
     )
 
 # ============================================
