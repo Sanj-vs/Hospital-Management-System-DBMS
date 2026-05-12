@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block page_title %}Lab Reports{% endblock %}
+{% block page_subtitle %}Patient laboratory test results{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>Lab Reports</h4><p>{{ reports|length }} total reports</p></div>
+  {% if session.role in ['admin','doctor'] %}
+  <a href="{{ url_for('add_lab_report') }}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add Lab Report</a>
+  {% endif %}
+</div>
+<div class="table-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        {% if session.role != 'patient' %}<th>Patient</th>{% endif %}
+        {% if session.role != 'doctor' %}<th>Doctor</th>{% endif %}
+        <th>Test Name</th><th>Result</th><th>Normal Range</th><th>Status</th><th>Test Date</th><th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+      <tr>
+        <td>#{{ r.lab_id }}</td>
+        {% if session.role != 'patient' %}<td><strong>{{ r.patient_name }}</strong></td>{% endif %}
+        {% if session.role != 'doctor' %}<td>{{ r.doctor_name }}</td>{% endif %}
+        <td><strong>{{ r.test_name }}</strong></td>
+        <td>{{ r.result[:60] }}{% if r.result|length > 60 %}...{% endif %}</td>
+        <td>{{ r.normal_range or '—' }}</td>
+        <td><span class="bp badge-{{ r.status|lower }}">{{ r.status }}</span></td>
+        <td>{{ r.test_date }}</td>
+        <td>{{ (r.notes or '—')[:50] }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="text-center text-muted py-4">No lab reports yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

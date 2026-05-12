@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block page_title %}Patients{% endblock %}
+{% block page_subtitle %}All registered patients{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>All Patients</h4><p>{{ patients|length }} patients registered</p></div>
+</div>
+<div class="table-card">
+  <table class="table">
+    <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Age</th><th>Gender</th><th>Blood Group</th><th>Address</th><th>Registered</th><th>Action</th></tr></thead>
+    <tbody>
+      {% for p in patients %}
+      <tr>
+        <td>#{{ p.patient_id }}</td>
+        <td><strong>{{ p.name }}</strong></td>
+        <td>{{ p.phone }}</td>
+        <td>{{ p.age }} yrs</td>
+        <td>{{ p.gender }}</td>
+        <td><span class="bp" style="background:#f0f9ff;color:#0369a1;">{{ p.blood_group or 'N/A' }}</span></td>
+        <td>{{ p.address }}</td>
+        <td>{{ p.registered_on }}</td>
+        <td>
+          {% if session.role == 'admin' %}
+          <a href="{{ url_for('delete_patient', patient_id=p.patient_id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')"><i class="fas fa-trash"></i></a>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="text-center text-muted py-4">No patients yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

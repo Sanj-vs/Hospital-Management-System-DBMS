@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block page_title %}Add Diagnosis{% endblock %}
+{% block page_subtitle %}Write a diagnosis report for a patient{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>Add Diagnosis Report</h4><p>Fill in diagnosis details</p></div>
+  <a href="{{ url_for('diagnosis') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back</a>
+</div>
+<div class="form-card" style="max-width:680px;">
+  <form method="POST">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label">Select Appointment *</label>
+        <select name="appt_id" class="form-select" required onchange="setPatientDoctor(this)">
+          <option value="">-- Choose Scheduled Appointment --</option>
+          {% for a in appointments %}
+          <option value="{{ a.appt_id }}"
+            data-patient="{{ a.patient_id }}"
+            data-doctor="{{ a.doctor_id if a.doctor_id is defined else doctor_id }}">
+            #{{ a.appt_id }} — {{ a.patient_name }} on {{ a.appt_date }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <input type="hidden" name="patient_id" id="patient_id">
+      <input type="hidden" name="doctor_id" id="doctor_id" value="{{ doctor_id or '' }}">
+      <div class="col-12">
+        <label class="form-label">Diagnosis *</label>
+        <textarea name="diagnosis" class="form-control" rows="4" placeholder="Describe the diagnosis in detail..." required></textarea>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Prescription / Treatment</label>
+        <textarea name="prescription" class="form-control" rows="3" placeholder="Medicines, dosage, instructions..."></textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Follow Up Date</label>
+        <input type="date" name="follow_up_date" class="form-control">
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-stethoscope me-2"></i>Save Diagnosis</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script>
+function setPatientDoctor(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  document.getElementById('patient_id').value = opt.dataset.patient || '';
+  if (!document.getElementById('doctor_id').value) {
+    document.getElementById('doctor_id').value = opt.dataset.doctor || '';
+  }
+}
+</script>
+{% endblock %}

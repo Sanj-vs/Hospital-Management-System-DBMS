@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block page_title %}Book Appointment{% endblock %}
+{% block page_subtitle %}Schedule a new appointment{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>Book Appointment</h4><p>Fill in the details below</p></div>
+  <a href="{{ url_for('appointments') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back</a>
+</div>
+<div class="form-card" style="max-width:600px;">
+  <form method="POST">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label">Select Patient *</label>
+        <select name="patient_id" class="form-select" required>
+          <option value="">-- Choose Patient --</option>
+          {% for p in patients %}
+          <option value="{{ p.patient_id }}" {% if session.role=='patient' and session.patient_id==p.patient_id %}selected{% endif %}>
+            {{ p.name }} ({{ p.phone }})
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Select Doctor *</label>
+        <select name="doctor_id" class="form-select" required>
+          <option value="">-- Choose Doctor --</option>
+          {% for d in doctors %}
+          <option value="{{ d.doctor_id }}">{{ d.name }} — {{ d.specialization }} ({{ d.dept_name }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Date *</label>
+        <input type="date" name="appt_date" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Time *</label>
+        <input type="time" name="appt_time" class="form-control" required>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Reason / Notes</label>
+        <textarea name="notes" class="form-control" rows="3" placeholder="Reason for visit..."></textarea>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-calendar-check me-2"></i>Book Appointment</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

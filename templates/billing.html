@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block page_title %}Billing{% endblock %}
+{% block page_subtitle %}Patient bills and payments{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>Billing Records</h4><p>{{ bills|length }} total bills</p></div>
+  {% if session.role in ['admin','receptionist'] %}
+  <a href="{{ url_for('add_billing') }}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add Bill</a>
+  {% endif %}
+</div>
+<div class="table-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Bill ID</th>
+        {% if session.role != 'patient' %}<th>Patient</th>{% endif %}
+        <th>Doctor</th><th>Appt Date</th><th>Description</th><th>Amount</th><th>Status</th><th>Paid On</th>
+        {% if session.role in ['admin','receptionist'] %}<th>Action</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bills %}
+      <tr>
+        <td>#{{ b.bill_id }}</td>
+        {% if session.role != 'patient' %}<td><strong>{{ b.patient_name }}</strong></td>{% endif %}
+        <td>{{ b.doctor_name }}</td>
+        <td>{{ b.appt_date }}</td>
+        <td>{{ b.description or '—' }}</td>
+        <td><strong>₹{{ "%.2f"|format(b.amount) }}</strong></td>
+        <td><span class="bp badge-{{ b.payment_status|lower }}">{{ b.payment_status }}</span></td>
+        <td>{{ b.payment_date or '—' }}</td>
+        {% if session.role in ['admin','receptionist'] %}
+        <td>
+          {% if b.payment_status == 'Pending' %}
+          <a href="{{ url_for('mark_paid', bill_id=b.bill_id) }}" class="btn btn-sm btn-success">
+            <i class="fas fa-check me-1"></i>Mark Paid
+          </a>
+          {% else %}—{% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="text-center text-muted py-4">No billing records yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block page_title %}Add Lab Report{% endblock %}
+{% block page_subtitle %}Enter patient test results{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>Add Lab Report</h4><p>Fill in the test results</p></div>
+  <a href="{{ url_for('lab_reports') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Back</a>
+</div>
+<div class="form-card" style="max-width:650px;">
+  <form method="POST">
+    <div class="row g-3">
+      <div class="col-12">
+        <label class="form-label">Select Patient *</label>
+        <select name="patient_id" class="form-select" required>
+          <option value="">-- Choose Patient --</option>
+          {% for p in patients %}
+          <option value="{{ p.patient_id }}">{{ p.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% if doctor_id %}
+      <input type="hidden" name="doctor_id" value="{{ doctor_id }}">
+      {% else %}
+      <div class="col-12">
+        <label class="form-label">Select Doctor *</label>
+        <select name="doctor_id" class="form-select" required>
+          <option value="">-- Choose Doctor --</option>
+          {% for d in doctors %}
+          <option value="{{ d.doctor_id }}">{{ d.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="col-md-8">
+        <label class="form-label">Test Name *</label>
+        <input type="text" name="test_name" class="form-control" placeholder="e.g. Complete Blood Count, HbA1c" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Test Date *</label>
+        <input type="date" name="test_date" class="form-control" required>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Result *</label>
+        <textarea name="result" class="form-control" rows="3" placeholder="Enter test result values..." required></textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Normal Range</label>
+        <input type="text" name="normal_range" class="form-control" placeholder="e.g. 70-100 mg/dL">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Status *</label>
+        <select name="status" class="form-select" required>
+          <option value="Normal">Normal</option>
+          <option value="Abnormal">Abnormal</option>
+          <option value="Critical">Critical</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Notes</label>
+        <textarea name="notes" class="form-control" rows="2" placeholder="Additional notes..."></textarea>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-flask me-2"></i>Save Lab Report</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

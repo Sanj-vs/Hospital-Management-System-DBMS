@@ -1,0 +1,57 @@
+PATIENT_DASHBOARD
+{% extends 'base.html' %}
+{% block page_title %}My Health Dashboard{% endblock %}
+{% block page_subtitle %}Your personal health overview{% endblock %}
+{% block content %}
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-blue"><i class="fas fa-calendar-check"></i></div>
+      <div class="stat-number">{{ total_appts }}</div>
+      <div class="stat-label">My Appointments</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-green"><i class="fas fa-stethoscope"></i></div>
+      <div class="stat-number">{{ total_diag }}</div>
+      <div class="stat-label">Diagnosis Reports</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-purple"><i class="fas fa-flask"></i></div>
+      <div class="stat-number">{{ total_lab }}</div>
+      <div class="stat-label">Lab Reports</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-red"><i class="fas fa-file-invoice-dollar"></i></div>
+      <div class="stat-number">{{ pending_bills }}</div>
+      <div class="stat-label">Pending Bills</div>
+    </div>
+  </div>
+</div>
+<div class="table-card">
+  <div class="table-card-header">
+    <h6><i class="fas fa-calendar me-2 text-primary"></i>My Recent Appointments</h6>
+    <a href="{{ url_for('appointments') }}" class="btn btn-outline-secondary btn-sm">View All</a>
+  </div>
+  <table class="table">
+    <thead><tr><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for a in recent_appts %}
+      <tr>
+        <td><strong>{{ a.doctor_name }}</strong></td>
+        <td>{{ a.appt_date }}</td>
+        <td>{{ a.appt_time }}</td>
+        <td><span class="bp badge-{{ a.status|lower }}">{{ a.status }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="text-center text-muted py-4">No appointments yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

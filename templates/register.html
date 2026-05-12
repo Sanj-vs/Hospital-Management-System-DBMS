@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register - MediCare HMS</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135deg,#0d1b2a,#1a3a5c);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;}
+.reg-card{background:#fff;border-radius:24px;width:100%;max-width:680px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.3);}
+.reg-header{background:linear-gradient(135deg,#0096ff,#00d4aa);padding:28px 36px;}
+.reg-header h3{color:#fff;font-size:1.3rem;font-weight:700;margin:0;}
+.reg-header p{color:rgba(255,255,255,.8);font-size:.82rem;margin:4px 0 0;}
+.reg-body{padding:32px 36px;}
+.form-label{font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px;}
+.form-control,.form-select{border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 13px;font-size:.84rem;transition:border-color .2s;}
+.form-control:focus,.form-select:focus{border-color:#00d4aa;box-shadow:0 0 0 3px rgba(0,212,170,.1);outline:none;}
+.btn-reg{background:linear-gradient(135deg,#0096ff,#00d4aa);border:none;border-radius:10px;padding:11px 28px;font-weight:600;font-size:.86rem;color:#fff;width:100%;margin-top:6px;}
+.btn-reg:hover{opacity:.9;}
+.login-link{text-align:center;font-size:.82rem;color:#8a99ab;margin-top:14px;}
+.login-link a{color:#0096ff;font-weight:600;text-decoration:none;}
+.alert{border:none;border-radius:10px;font-size:.82rem;}
+</style>
+</head>
+<body>
+<div class="reg-card">
+  <div class="reg-header">
+    <h3><i class="fas fa-user-plus me-2"></i>Patient Registration</h3>
+    <p>Create your account to access your health records</p>
+  </div>
+  <div class="reg-body">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Full Name *</label>
+          <input type="text" name="name" class="form-control" placeholder="e.g. Rahul Gupta" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Phone Number *</label>
+          <input type="text" name="phone" class="form-control" placeholder="10-digit number" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-control" placeholder="optional">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Password *</label>
+          <input type="password" name="password" class="form-control" placeholder="Create a password" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Age *</label>
+          <input type="number" name="age" class="form-control" min="0" max="150" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Gender *</label>
+          <select name="gender" class="form-select" required>
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Blood Group</label>
+          <select name="blood_group" class="form-select">
+            <option value="">Unknown</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option>
+            <option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Address *</label>
+          <input type="text" name="address" class="form-control" placeholder="Full address" required>
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn-reg">
+            <i class="fas fa-user-check me-2"></i>Create Account
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="login-link">Already have an account? <a href="{{ url_for('login') }}">Login here</a></div>
+  </div>
+</div>
+</body>
+</html>

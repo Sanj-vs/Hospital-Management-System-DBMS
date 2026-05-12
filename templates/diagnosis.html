@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block page_title %}Diagnosis Reports{% endblock %}
+{% block page_subtitle %}Medical diagnosis records{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>Diagnosis Reports</h4><p>{{ reports|length }} total reports</p></div>
+  {% if session.role in ['admin','doctor'] %}
+  <a href="{{ url_for('add_diagnosis') }}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Add Diagnosis</a>
+  {% endif %}
+</div>
+<div class="table-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        {% if session.role != 'patient' %}<th>Patient</th>{% endif %}
+        {% if session.role != 'doctor' %}<th>Doctor</th>{% endif %}
+        <th>Appt Date</th><th>Diagnosis</th><th>Prescription</th><th>Follow Up</th><th>Added On</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reports %}
+      <tr>
+        <td>#{{ r.diag_id }}</td>
+        {% if session.role != 'patient' %}<td><strong>{{ r.patient_name }}</strong></td>{% endif %}
+        {% if session.role != 'doctor' %}<td>{{ r.doctor_name }}</td>{% endif %}
+        <td>{{ r.appt_date }}</td>
+        <td style="max-width:200px;">{{ r.diagnosis[:80] }}{% if r.diagnosis|length > 80 %}...{% endif %}</td>
+        <td style="max-width:160px;">{{ (r.prescription or '—')[:60] }}</td>
+        <td>{{ r.follow_up_date or '—' }}</td>
+        <td>{{ r.created_at.strftime('%d %b %Y') if r.created_at else '—' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted py-4">No diagnosis reports yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

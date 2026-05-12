@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block page_title %}Appointments{% endblock %}
+{% block page_subtitle %}Manage all appointments{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h4>Appointments</h4><p>{{ appointments|length }} total</p></div>
+  {% if session.role in ['admin','receptionist'] %}
+  <a href="{{ url_for('book_appointment') }}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Book New</a>
+  {% endif %}
+</div>
+<div class="table-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        {% if session.role != 'patient' %}<th>Patient</th>{% endif %}
+        {% if session.role != 'doctor' %}<th>Doctor</th>{% endif %}
+        <th>Date</th><th>Time</th><th>Notes</th><th>Status</th>
+        {% if session.role in ['admin','receptionist','doctor'] %}<th>Actions</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in appointments %}
+      <tr>
+        <td>#{{ a.appt_id }}</td>
+        {% if session.role != 'patient' %}<td><strong>{{ a.patient_name }}</strong></td>{% endif %}
+        {% if session.role != 'doctor' %}<td>{{ a.doctor_name }}</td>{% endif %}
+        <td>{{ a.appt_date }}</td>
+        <td>{{ a.appt_time }}</td>
+        <td>{{ a.notes or '—' }}</td>
+        <td><span class="bp badge-{{ a.status|lower }}">{{ a.status }}</span></td>
+        {% if session.role in ['admin','receptionist','doctor'] %}
+        <td>
+          {% if a.status == 'Scheduled' %}
+          <a href="{{ url_for('update_appointment', appt_id=a.appt_id, status='Completed') }}" class="btn btn-sm btn-success me-1"><i class="fas fa-check"></i></a>
+          <a href="{{ url_for('update_appointment', appt_id=a.appt_id, status='Cancelled') }}" class="btn btn-sm btn-danger" onclick="return confirm('Cancel?')"><i class="fas fa-times"></i></a>
+          {% else %}—{% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="text-center text-muted py-4">No appointments found</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

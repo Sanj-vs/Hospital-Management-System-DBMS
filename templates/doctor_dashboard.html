@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block page_title %}Doctor Dashboard{% endblock %}
+{% block page_subtitle %}Your appointments and reports overview{% endblock %}
+{% block content %}
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-amber"><i class="fas fa-calendar-day"></i></div>
+      <div class="stat-number">{{ todays }}</div>
+      <div class="stat-label">Today's Appointments</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-blue"><i class="fas fa-calendar-check"></i></div>
+      <div class="stat-number">{{ scheduled }}</div>
+      <div class="stat-label">Scheduled</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-green"><i class="fas fa-stethoscope"></i></div>
+      <div class="stat-number">{{ total_diag }}</div>
+      <div class="stat-label">Diagnosis Added</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="stat-icon si-purple"><i class="fas fa-flask"></i></div>
+      <div class="stat-number">{{ total_lab }}</div>
+      <div class="stat-label">Lab Reports Added</div>
+    </div>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-md-8">
+    <div class="table-card">
+      <div class="table-card-header">
+        <h6><i class="fas fa-users me-2 text-primary"></i>My Patients</h6>
+        <a href="{{ url_for('add_diagnosis') }}" class="btn btn-primary btn-sm">
+          <i class="fas fa-plus me-1"></i>Add Diagnosis
+        </a>
+      </div>
+      <table class="table">
+        <thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for a in recent_appts %}
+          <tr>
+            <td><strong>{{ a.patient_name }}</strong></td>
+            <td>{{ a.appt_date }}</td>
+            <td>{{ a.appt_time }}</td>
+            <td><span class="bp badge-{{ a.status|lower }}">{{ a.status }}</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-muted py-4">No appointments</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="font-size:.85rem;font-weight:700;color:#0d1b2a;">Quick Actions</div>
+      <a href="{{ url_for('add_diagnosis') }}" style="text-decoration:none;">
+        <div class="stat-card" style="padding:16px;display:flex;align-items:center;gap:12px;">
+          <div class="stat-icon si-green" style="margin:0;width:38px;height:38px;font-size:.9rem;flex-shrink:0;"><i class="fas fa-stethoscope"></i></div>
+          <div><div style="font-size:.82rem;font-weight:600;color:#0d1b2a;">Add Diagnosis</div><div style="font-size:.72rem;color:#8a99ab;">Write diagnosis report</div></div>
+          <i class="fas fa-chevron-right ms-auto" style="color:#cbd5e0;font-size:.75rem;"></i>
+        </div>
+      </a>
+      <a href="{{ url_for('add_lab_report') }}" style="text-decoration:none;">
+        <div class="stat-card" style="padding:16px;display:flex;align-items:center;gap:12px;">
+          <div class="stat-icon si-purple" style="margin:0;width:38px;height:38px;font-size:.9rem;flex-shrink:0;"><i class="fas fa-flask"></i></div>
+          <div><div style="font-size:.82rem;font-weight:600;color:#0d1b2a;">Add Lab Report</div><div style="font-size:.72rem;color:#8a99ab;">Add test results</div></div>
+          <i class="fas fa-chevron-right ms-auto" style="color:#cbd5e0;font-size:.75rem;"></i>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

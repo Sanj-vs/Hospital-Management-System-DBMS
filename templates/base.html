@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCare HMS</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4f8;display:flex;min-height:100vh;}
+.sidebar{width:260px;background:linear-gradient(160deg,#0d1b2a 0%,#1a2f45 100%);min-height:100vh;position:fixed;top:0;left:0;z-index:200;display:flex;flex-direction:column;box-shadow:4px 0 24px rgba(0,0,0,.25);}
+.sidebar-brand{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.07);}
+.brand-row{display:flex;align-items:center;gap:12px;}
+.brand-icon{width:42px;height:42px;background:linear-gradient(135deg,#00d4aa,#0096ff);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:#fff;box-shadow:0 4px 12px rgba(0,148,255,.4);}
+.brand-text h4{color:#fff;font-size:.95rem;font-weight:700;margin:0;}
+.brand-text span{color:rgba(255,255,255,.35);font-size:.68rem;}
+.nav-sec{padding:16px 18px 4px;color:rgba(255,255,255,.25);font-size:.62rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;}
+.nav-link{display:flex;align-items:center;gap:12px;padding:10px 14px;margin:2px 8px;border-radius:10px;color:rgba(255,255,255,.55);text-decoration:none;font-size:.82rem;font-weight:500;transition:all .2s;border-left:3px solid transparent;}
+.nav-link i{width:18px;text-align:center;font-size:.88rem;color:rgba(255,255,255,.3);}
+.nav-link:hover{background:rgba(255,255,255,.08);color:#fff;}
+.nav-link.active{background:linear-gradient(90deg,rgba(0,212,170,.15),rgba(0,150,255,.08));color:#fff;border-left-color:#00d4aa;}
+.nav-link.active i{color:#00d4aa;}
+.role-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.65rem;font-weight:700;margin-top:4px;}
+.role-admin{background:rgba(239,68,68,.2);color:#fca5a5;}
+.role-doctor{background:rgba(16,185,129,.2);color:#6ee7b7;}
+.role-receptionist{background:rgba(245,158,11,.2);color:#fcd34d;}
+.role-patient{background:rgba(99,102,241,.2);color:#c7d2fe;}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.07);margin-top:auto;}
+.user-row{display:flex;align-items:center;gap:10px;}
+.user-av{width:36px;height:36px;background:linear-gradient(135deg,#00d4aa,#0096ff);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.75rem;font-weight:700;flex-shrink:0;}
+.user-nm{color:#fff;font-size:.8rem;font-weight:600;}
+.user-rl{color:rgba(255,255,255,.35);font-size:.65rem;}
+.logout-btn{margin-left:auto;color:rgba(255,255,255,.3);font-size:.8rem;text-decoration:none;transition:color .2s;}
+.logout-btn:hover{color:#ef4444;}
+.main-content{margin-left:260px;flex:1;}
+.topbar{background:#fff;padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e8edf2;position:sticky;top:0;z-index:100;}
+.topbar-left h5{font-size:1rem;font-weight:700;color:#0d1b2a;margin:0;}
+.topbar-left p{color:#8a99ab;font-size:.75rem;margin:0;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.top-pill{background:#f0f4f8;border:1px solid #e2e8f0;border-radius:20px;padding:5px 14px;font-size:.75rem;color:#4a5568;font-weight:500;}
+.top-pill i{color:#00d4aa;margin-right:5px;font-size:.6rem;}
+.notif-btn{width:36px;height:36px;background:#f0f4f8;border:1px solid #e2e8f0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#4a5568;position:relative;}
+.notif-dot{width:7px;height:7px;background:#ef4444;border-radius:50%;position:absolute;top:6px;right:6px;border:1.5px solid #fff;}
+.page-body{padding:26px 28px;}
+.alert{border:none;border-radius:12px;font-size:.83rem;}
+.stat-card{background:#fff;border-radius:16px;padding:22px;border:1px solid #e8edf2;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.08);}
+.stat-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:14px;}
+.si-blue{background:#eff6ff;color:#2563eb;}
+.si-green{background:#f0fdf4;color:#16a34a;}
+.si-amber{background:#fffbeb;color:#d97706;}
+.si-red{background:#fef2f2;color:#dc2626;}
+.si-purple{background:#f5f3ff;color:#7c3aed;}
+.stat-number{font-size:1.9rem;font-weight:700;color:#0d1b2a;line-height:1;}
+.stat-label{color:#8a99ab;font-size:.75rem;margin-top:5px;font-weight:500;}
+.stat-trend{display:inline-flex;align-items:center;gap:3px;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:7px;}
+.trend-up{background:#f0fdf4;color:#16a34a;}
+.trend-neutral{background:#f8fafc;color:#64748b;}
+.trend-warn{background:#fef2f2;color:#dc2626;}
+.table-card{background:#fff;border-radius:16px;border:1px solid #e8edf2;overflow:hidden;}
+.table-card-header{padding:16px 22px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;}
+.table-card-header h6{font-weight:700;color:#0d1b2a;margin:0;font-size:.9rem;}
+.table thead th{background:#f8fafc;color:#8a99ab;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #e8edf2;padding:11px 16px;}
+.table tbody td{padding:13px 16px;color:#374151;font-size:.83rem;vertical-align:middle;border-bottom:1px solid #f8fafc;}
+.table tbody tr:last-child td{border-bottom:none;}
+.table tbody tr:hover{background:#fafbfc;}
+.bp{padding:4px 11px;border-radius:20px;font-size:.7rem;font-weight:600;}
+.badge-scheduled{background:#eff6ff;color:#1d4ed8;}
+.badge-completed{background:#f0fdf4;color:#15803d;}
+.badge-cancelled{background:#fef2f2;color:#b91c1c;}
+.badge-pending{background:#fffbeb;color:#b45309;}
+.badge-paid{background:#f0fdf4;color:#15803d;}
+.badge-normal{background:#f0fdf4;color:#15803d;}
+.badge-abnormal{background:#fffbeb;color:#b45309;}
+.badge-critical{background:#fef2f2;color:#b91c1c;}
+.form-card{background:#fff;border-radius:16px;padding:28px;border:1px solid #e8edf2;}
+.form-label{font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px;}
+.form-control,.form-select{border:1.5px solid #e2e8f0;border-radius:10px;padding:9px 13px;font-size:.84rem;color:#0d1b2a;transition:border-color .2s,box-shadow .2s;}
+.form-control:focus,.form-select:focus{border-color:#00d4aa;box-shadow:0 0 0 3px rgba(0,212,170,.1);outline:none;}
+.btn-primary{background:linear-gradient(135deg,#0096ff,#00d4aa);border:none;border-radius:10px;padding:10px 24px;font-weight:600;font-size:.84rem;}
+.btn-primary:hover{opacity:.9;}
+.btn-outline-secondary{border:1.5px solid #e2e8f0;color:#4a5568;border-radius:10px;padding:9px 18px;font-size:.84rem;background:#fff;}
+.btn-sm{padding:4px 11px;font-size:.73rem;border-radius:8px;}
+.btn-success{background:#16a34a;border:none;border-radius:8px;}
+.btn-danger{background:#dc2626;border:none;border-radius:8px;}
+.btn-warning{background:#d97706;border:none;border-radius:8px;color:#fff;}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.page-header h4{font-weight:700;color:#0d1b2a;margin:0;font-size:1.1rem;}
+.page-header p{color:#8a99ab;font-size:.8rem;margin:0;}
+.doctor-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #e8edf2;transition:transform .2s,box-shadow .2s;}
+.doctor-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.08);}
+.doc-av{width:50px;height:50px;background:linear-gradient(135deg,#00d4aa,#0096ff);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-row">
+      <div class="brand-icon"><i class="fas fa-hospital-alt"></i></div>
+      <div class="brand-text"><h4>MediCare HMS</h4><span>Hospital Management</span></div>
+    </div>
+  </div>
+
+  <div class="nav-sec">Main</div>
+  <a href="{{ url_for('dashboard') }}" class="nav-link {{ 'active' if request.endpoint == 'dashboard' }}">
+    <i class="fas fa-th-large"></i> Dashboard
+  </a>
+
+  {% if session.role in ['admin','receptionist'] %}
+  <div class="nav-sec">Patient Care</div>
+  <a href="{{ url_for('patients') }}" class="nav-link {{ 'active' if 'patient' in request.endpoint }}">
+    <i class="fas fa-procedures"></i> Patients
+  </a>
+  {% endif %}
+
+  <a href="{{ url_for('doctors') }}" class="nav-link {{ 'active' if request.endpoint == 'doctors' }}">
+    <i class="fas fa-user-md"></i> Doctors
+  </a>
+
+  <a href="{{ url_for('appointments') }}" class="nav-link {{ 'active' if 'appointment' in request.endpoint }}">
+    <i class="fas fa-calendar-check"></i> Appointments
+  </a>
+
+  <div class="nav-sec">Medical</div>
+  <a href="{{ url_for('diagnosis') }}" class="nav-link {{ 'active' if 'diagnosis' in request.endpoint }}">
+    <i class="fas fa-stethoscope"></i> Diagnosis Reports
+  </a>
+  <a href="{{ url_for('lab_reports') }}" class="nav-link {{ 'active' if 'lab' in request.endpoint }}">
+    <i class="fas fa-flask"></i> Lab Reports
+  </a>
+
+  {% if session.role in ['admin','receptionist'] %}
+  <div class="nav-sec">Finance</div>
+  <a href="{{ url_for('billing') }}" class="nav-link {{ 'active' if 'bill' in request.endpoint }}">
+    <i class="fas fa-file-invoice-dollar"></i> Billing
+  </a>
+  {% endif %}
+
+  {% if session.role == 'patient' %}
+  <div class="nav-sec">My Account</div>
+  <a href="{{ url_for('billing') }}" class="nav-link {{ 'active' if 'bill' in request.endpoint }}">
+    <i class="fas fa-file-invoice-dollar"></i> My Bills
+  </a>
+  {% endif %}
+
+  <div class="sidebar-footer">
+    <div class="user-row">
+      <div class="user-av">{{ session.name[:2].upper() if session.name else 'U' }}</div>
+      <div>
+        <div class="user-nm">{{ session.name }}</div>
+        <div class="user-rl">{{ session.role | capitalize }}</div>
+      </div>
+      <a href="{{ url_for('logout') }}" class="logout-btn" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h5>{% block page_title %}Dashboard{% endblock %}</h5>
+      <p>{% block page_subtitle %}Welcome back{% endblock %}</p>
+    </div>
+    <div class="topbar-right">
+      <div class="top-pill"><i class="fas fa-circle"></i>System Online</div>
+      <div class="top-pill"><i class="fas fa-calendar-alt"></i>{{ now.strftime('%d %b %Y') if now else '' }}</div>
+      <div class="notif-btn"><i class="fas fa-bell" style="font-size:.82rem;"></i><span class="notif-dot"></span></div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show mb-3">
+            {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
