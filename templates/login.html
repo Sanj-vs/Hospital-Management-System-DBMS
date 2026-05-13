@@ -10,7 +10,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135deg,#0d1b2a 0%,#1a3a5c 50%,#0d2b45 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.login-wrap{display:flex;width:900px;min-height:560px;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);}
+.login-wrap{display:flex;width:900px;min-height:520px;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);}
 .login-left{flex:1;background:linear-gradient(135deg,#00d4aa,#0096ff);padding:48px 40px;display:flex;flex-direction:column;justify-content:space-between;}
 .login-left h2{color:#fff;font-size:1.8rem;font-weight:700;margin-bottom:12px;}
 .login-left p{color:rgba(255,255,255,.8);font-size:.88rem;line-height:1.6;}
@@ -24,22 +24,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135de
 .login-right h3{font-size:1.4rem;font-weight:700;color:#0d1b2a;margin-bottom:6px;}
 .login-right p{color:#8a99ab;font-size:.82rem;margin-bottom:28px;}
 .form-label{font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px;}
-.form-control{border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;font-size:.85rem;transition:border-color .2s;}
+.form-control{border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px 10px 36px;font-size:.85rem;transition:border-color .2s;}
 .form-control:focus{border-color:#00d4aa;box-shadow:0 0 0 3px rgba(0,212,170,.1);outline:none;}
 .input-icon{position:relative;}
 .input-icon i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.85rem;}
-.input-icon .form-control{padding-left:36px;}
-.btn-login{background:linear-gradient(135deg,#0096ff,#00d4aa);border:none;border-radius:10px;padding:11px;font-weight:600;font-size:.88rem;color:#fff;width:100%;margin-top:8px;transition:opacity .2s,transform .1s;}
-.btn-login:hover{opacity:.9;transform:translateY(-1px);}
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:#9ca3af;font-size:.75rem;}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e2e8f0;}
-.register-link{text-align:center;font-size:.82rem;color:#8a99ab;}
+.btn-login{background:linear-gradient(135deg,#0096ff,#00d4aa);border:none;border-radius:10px;padding:11px;font-weight:600;font-size:.88rem;color:#fff;width:100%;margin-top:8px;transition:opacity .2s;}
+.btn-login:hover{opacity:.9;}
+.register-link{text-align:center;font-size:.82rem;color:#8a99ab;margin-top:16px;}
 .register-link a{color:#0096ff;font-weight:600;text-decoration:none;}
 .alert{border:none;border-radius:10px;font-size:.82rem;padding:10px 14px;}
-.credentials-box{background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:20px;border:1px solid #e2e8f0;}
-.credentials-box p{font-size:.72rem;color:#64748b;margin:0 0 6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-.cred-row{display:flex;justify-content:space-between;font-size:.75rem;color:#374151;margin-bottom:3px;}
-.cred-row span:last-child{color:#0096ff;font-weight:600;}
+.info-box{background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:20px;border:1px solid #e2e8f0;}
+.info-box p{font-size:.72rem;color:#64748b;margin:0 0 6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.info-row{display:flex;justify-content:space-between;font-size:.75rem;color:#374151;margin-bottom:3px;}
+.info-row span:last-child{color:#0096ff;font-weight:600;}
 </style>
 </head>
 <body>
@@ -53,7 +50,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135de
       <h2>Smart Hospital Management</h2>
       <p>A complete system to manage patients, doctors, appointments, diagnosis and lab reports.</p>
       <div class="feature-list">
-        <div class="feature-item"><div class="feature-icon"><i class="fas fa-procedures"></i></div>Patient Registration & Records</div>
+        <div class="feature-item"><div class="feature-icon"><i class="fas fa-procedures"></i></div>Patient Registration and Records</div>
         <div class="feature-item"><div class="feature-icon"><i class="fas fa-calendar-check"></i></div>Appointment Booking</div>
         <div class="feature-item"><div class="feature-icon"><i class="fas fa-stethoscope"></i></div>Diagnosis Reports</div>
         <div class="feature-item"><div class="feature-icon"><i class="fas fa-flask"></i></div>Lab Reports</div>
@@ -65,7 +62,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135de
 
   <div class="login-right">
     <h3>Welcome Back</h3>
-    <p>Login to your account to continue</p>
+    <p>Enter your phone number to login</p>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -75,26 +72,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135de
       {% endif %}
     {% endwith %}
 
-    <div class="credentials-box">
-      <p>Default Login Credentials</p>
-      <div class="cred-row"><span>Admin</span><span>9000000000 / admin123</span></div>
-      <div class="cred-row"><span>Receptionist</span><span>9000000001 / recept123</span></div>
-      <div class="cred-row"><span>Any Doctor</span><span>987650100X / doctor123</span></div>
+    <div class="info-box">
+      <p>Staff Login Numbers</p>
+      <div class="info-row"><span>Admin</span><span>9000000000</span></div>
+      <div class="info-row"><span>Receptionist</span><span>9000000001</span></div>
+      <div class="info-row"><span>Doctors</span><span>9876501001 to 9876501010</span></div>
     </div>
 
     <form method="POST">
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="form-label">Phone Number</label>
         <div class="input-icon">
           <i class="fas fa-phone"></i>
           <input type="text" name="phone" class="form-control" placeholder="Enter your phone number" required>
-        </div>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <div class="input-icon">
-          <i class="fas fa-lock"></i>
-          <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
         </div>
       </div>
       <button type="submit" class="btn-login">
@@ -102,7 +92,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135de
       </button>
     </form>
 
-    <div class="divider">or</div>
     <div class="register-link">
       New patient? <a href="{{ url_for('register') }}">Register here</a>
     </div>

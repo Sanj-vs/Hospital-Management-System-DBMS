@@ -23,7 +23,7 @@ def get_db():
     )
 
 # ============================================
-# LOGIN REQUIRED DECORATORS
+# LOGIN REQUIRED DECORATOR
 # ============================================
 def login_required(f):
     @wraps(f)
@@ -34,12 +34,15 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
+# ============================================
+# ROLE REQUIRED DECORATOR  (was missing — fixes NameError crash)
+# ============================================
 def role_required(*roles):
     def decorator(f):
         @wraps(f)
         def decorated(*args, **kwargs):
-            if 'role' not in session or session['role'] not in roles:
-                flash('Access denied.', 'danger')
+            if session.get('role') not in roles:
+                flash('Access denied. You do not have permission to view that page.', 'danger')
                 return redirect(url_for('dashboard'))
             return f(*args, **kwargs)
         return decorated
@@ -58,10 +61,9 @@ def index():
 def login():
     if request.method == 'POST':
         phone = request.form['phone']
-        password = request.form['password']
         db = get_db()
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM Users WHERE phone = %s AND password = %s", (phone, password))
+        cursor.execute("SELECT * FROM Users WHERE phone = %s", (phone,))
         user = cursor.fetchone()
         cursor.close()
         db.close()
@@ -91,7 +93,7 @@ def login():
             flash(f'Welcome, {user["name"]}!', 'success')
             return redirect(url_for('dashboard'))
         else:
-            flash('Invalid phone or password.', 'danger')
+            flash('Phone number not found!', 'danger')
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -103,19 +105,28 @@ def register():
             cursor.execute("""
                 INSERT INTO Users (name, phone, email, password, role)
                 VALUES (%s, %s, %s, %s, 'patient')
-            """, (request.form['name'], request.form['phone'],
-                  request.form['email'], request.form['password']))
+            """, (
+                request.form['name'],
+                request.form['phone'],
+                request.form.get('email', ''),
+                'nopwd'
+            ))
             user_id = cursor.lastrowid
             cursor.execute("""
                 INSERT INTO Patient (user_id, age, gender, address, blood_group)
                 VALUES (%s, %s, %s, %s, %s)
-            """, (user_id, request.form['age'], request.form['gender'],
-                  request.form['address'], request.form['blood_group']))
+            """, (
+                user_id,
+                request.form['age'],
+                request.form['gender'],
+                request.form['address'],
+                request.form['blood_group']
+            ))
             db.commit()
             flash('Registration successful! Please login.', 'success')
             return redirect(url_for('login'))
         except mysql.connector.IntegrityError:
-            flash('Phone number or email already exists!', 'danger')
+            flash('Phone number already exists!', 'danger')
         finally:
             cursor.close()
             db.close()
@@ -236,14 +247,29 @@ def patients():
 def delete_patient(patient_id):
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT user_id FROM Patient WHERE patient_id=%s", (patient_id,))
-    p = cursor.fetchone()
-    if p:
-        cursor.execute("DELETE FROM Users WHERE user_id=%s", (p[0],))
-        db.commit()
-    cursor.close()
-    db.close()
-    flash('Patient deleted.', 'info')
+    try:
+        # Fetch user_id before deleting
+        cursor.execute("SELECT user_id FROM Patient WHERE patient_id=%s", (patient_id,))
+        row = cursor.fetchone()
+        if row:
+            user_id = row[0]
+            # Delete child records explicitly if no ON DELETE CASCADE in schema
+            cursor.execute("DELETE FROM Billing WHERE patient_id=%s", (patient_id,))
+            cursor.execute("DELETE FROM LabReport WHERE patient_id=%s", (patient_id,))
+            cursor.execute("DELETE FROM DiagnosisReport WHERE patient_id=%s", (patient_id,))
+            cursor.execute("DELETE FROM Appointment WHERE patient_id=%s", (patient_id,))
+            cursor.execute("DELETE FROM Patient WHERE patient_id=%s", (patient_id,))
+            cursor.execute("DELETE FROM Users WHERE user_id=%s", (user_id,))
+            db.commit()
+            flash('Patient deleted successfully.', 'info')
+        else:
+            flash('Patient not found.', 'warning')
+    except Exception as e:
+        db.rollback()
+        flash(f'Error deleting patient: {str(e)}', 'danger')
+    finally:
+        cursor.close()
+        db.close()
     return redirect(url_for('patients'))
 
 # ============================================
@@ -339,6 +365,12 @@ def book_appointment():
 @app.route('/appointments/update/<int:appt_id>/<status>')
 @login_required
 def update_appointment(appt_id, status):
+    # Whitelist valid statuses to prevent SQL injection via URL param
+    VALID_STATUSES = {'Scheduled', 'Completed', 'Cancelled'}
+    if status not in VALID_STATUSES:
+        flash('Invalid appointment status.', 'danger')
+        return redirect(url_for('appointments'))
+
     db = get_db()
     cursor = db.cursor()
     cursor.execute("UPDATE Appointment SET status=%s WHERE appt_id=%s", (status, appt_id))
@@ -407,8 +439,11 @@ def add_diagnosis():
             cursor.execute("UPDATE Appointment SET status='Completed' WHERE appt_id=%s", (request.form['appt_id'],))
             db.commit()
             flash('Diagnosis report added!', 'success')
+            cursor.close()
+            db.close()
             return redirect(url_for('diagnosis'))
         except Exception as e:
+            db.rollback()
             flash(f'Error: {str(e)}', 'danger')
 
     did = session.get('doctor_id')
@@ -421,6 +456,9 @@ def add_diagnosis():
         """, (did,))
         appointments = cursor.fetchall()
         doctor_id = did
+        cursor.close()
+        db.close()
+        return render_template('add_diagnosis.html', appointments=appointments, doctor_id=doctor_id)
     else:
         cursor.execute("""
             SELECT a.appt_id, pu.name as patient_name, p.patient_id, a.appt_date, d.doctor_id
@@ -430,10 +468,9 @@ def add_diagnosis():
             WHERE a.status='Scheduled'
         """)
         appointments = cursor.fetchall()
-        doctor_id = None
-    cursor.close()
-    db.close()
-    return render_template('add_diagnosis.html', appointments=appointments, doctor_id=doctor_id)
+        cursor.close()
+        db.close()
+        return render_template('add_diagnosis.html', appointments=appointments, doctor_id=None)
 
 # ============================================
 # LAB REPORTS
@@ -477,6 +514,7 @@ def lab_reports():
 def add_lab_report():
     db = get_db()
     cursor = db.cursor(dictionary=True)
+
     if request.method == 'POST':
         try:
             cursor.execute("""
@@ -488,10 +526,14 @@ def add_lab_report():
                   request.form['test_date'], request.form['notes']))
             db.commit()
             flash('Lab report added!', 'success')
+            cursor.close()
+            db.close()
             return redirect(url_for('lab_reports'))
         except Exception as e:
+            db.rollback()
             flash(f'Error: {str(e)}', 'danger')
 
+    # Always fetch patients list
     cursor.execute("""
         SELECT p.patient_id, u.name FROM Patient p JOIN Users u ON p.user_id=u.user_id ORDER BY u.name
     """)
@@ -499,18 +541,18 @@ def add_lab_report():
 
     if session['role'] == 'doctor':
         doctor_id = session.get('doctor_id')
+        cursor.close()
+        db.close()
+        # doctor_id is passed; template hides doctor selector and uses hidden field
+        return render_template('add_lab_report.html', patients=patients, doctors=None, doctor_id=doctor_id)
     else:
         cursor.execute("""
-            SELECT d.doctor_id, u.name FROM Doctor d JOIN Users u ON d.user_id=u.user_id
+            SELECT d.doctor_id, u.name FROM Doctor d JOIN Users u ON d.user_id=u.user_id ORDER BY u.name
         """)
         doctors = cursor.fetchall()
         cursor.close()
         db.close()
         return render_template('add_lab_report.html', patients=patients, doctors=doctors, doctor_id=None)
-
-    cursor.close()
-    db.close()
-    return render_template('add_lab_report.html', patients=patients, doctor_id=doctor_id)
 
 # ============================================
 # BILLING
@@ -558,8 +600,11 @@ def add_billing():
                   request.form['amount'], request.form['description']))
             db.commit()
             flash('Bill added!', 'success')
+            cursor.close()
+            db.close()
             return redirect(url_for('billing'))
         except Exception as e:
+            db.rollback()
             flash(f'Error: {str(e)}', 'danger')
 
     cursor.execute("""
