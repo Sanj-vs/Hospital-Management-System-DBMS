@@ -60,41 +60,55 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        phone = request.form['phone']
+        phone    = request.form.get('phone', '').strip()
+        password = request.form.get('password', '').strip()
         db = get_db()
         cursor = db.cursor(dictionary=True)
         cursor.execute("SELECT * FROM Users WHERE phone = %s", (phone,))
         user = cursor.fetchone()
         cursor.close()
         db.close()
-        if user:
-            session['user_id'] = user['user_id']
-            session['name'] = user['name']
-            session['role'] = user['role']
-            session['phone'] = user['phone']
-            if user['role'] == 'patient':
-                db2 = get_db()
-                cur2 = db2.cursor(dictionary=True)
-                cur2.execute("SELECT patient_id FROM Patient WHERE user_id = %s", (user['user_id'],))
-                p = cur2.fetchone()
-                cur2.close()
-                db2.close()
-                if p:
-                    session['patient_id'] = p['patient_id']
-            elif user['role'] == 'doctor':
-                db2 = get_db()
-                cur2 = db2.cursor(dictionary=True)
-                cur2.execute("SELECT doctor_id FROM Doctor WHERE user_id = %s", (user['user_id'],))
-                d = cur2.fetchone()
-                cur2.close()
-                db2.close()
-                if d:
-                    session['doctor_id'] = d['doctor_id']
-            flash(f'Welcome, {user["name"]}!', 'success')
-            return redirect(url_for('dashboard'))
-        else:
+
+        if not user:
             flash('Phone number not found!', 'danger')
+            return redirect(url_for('login'))
+
+        if user['role'] == 'admin':
+            if not password or password != user['password']:
+                flash('Incorrect admin password!', 'danger')
+                return redirect(url_for('login') + '?failed=admin')
+
+        if user['role'] == 'receptionist':
+            if not password or password != user['password']:
+                flash('Incorrect password!', 'danger')
+                return redirect(url_for('login'))
+
+        session['user_id'] = user['user_id']
+        session['name']    = user['name']
+        session['role']    = user['role']
+        session['phone']   = user['phone']
+
+        if user['role'] == 'patient':
+            db2  = get_db()
+            cur2 = db2.cursor(dictionary=True)
+            cur2.execute("SELECT patient_id FROM Patient WHERE user_id = %s", (user['user_id'],))
+            p = cur2.fetchone()
+            cur2.close(); db2.close()
+            if p: session['patient_id'] = p['patient_id']
+
+        elif user['role'] == 'doctor':
+            db2  = get_db()
+            cur2 = db2.cursor(dictionary=True)
+            cur2.execute("SELECT doctor_id FROM Doctor WHERE user_id = %s", (user['user_id'],))
+            d = cur2.fetchone()
+            cur2.close(); db2.close()
+            if d: session['doctor_id'] = d['doctor_id']
+
+        flash(f'Welcome, {user["name"]}!', 'success')
+        return redirect(url_for('dashboard'))
+
     return render_template('login.html')
+                
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

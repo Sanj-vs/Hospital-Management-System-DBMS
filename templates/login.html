@@ -1,102 +1,404 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - MediCare HMS</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MediCare HMS — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:linear-gradient(135deg,#0d1b2a 0%,#1a3a5c 50%,#0d2b45 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.login-wrap{display:flex;width:900px;min-height:520px;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.4);}
-.login-left{flex:1;background:linear-gradient(135deg,#00d4aa,#0096ff);padding:48px 40px;display:flex;flex-direction:column;justify-content:space-between;}
-.login-left h2{color:#fff;font-size:1.8rem;font-weight:700;margin-bottom:12px;}
-.login-left p{color:rgba(255,255,255,.8);font-size:.88rem;line-height:1.6;}
-.feature-list{margin-top:32px;display:flex;flex-direction:column;gap:16px;}
-.feature-item{display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.9);font-size:.83rem;}
-.feature-icon{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
-.login-brand{display:flex;align-items:center;gap:10px;}
-.brand-icon{width:40px;height:40px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;}
-.brand-name{color:#fff;font-size:1rem;font-weight:700;}
-.login-right{width:400px;background:#fff;padding:48px 40px;display:flex;flex-direction:column;justify-content:center;}
-.login-right h3{font-size:1.4rem;font-weight:700;color:#0d1b2a;margin-bottom:6px;}
-.login-right p{color:#8a99ab;font-size:.82rem;margin-bottom:28px;}
-.form-label{font-size:.82rem;font-weight:600;color:#374151;margin-bottom:5px;}
-.form-control{border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px 10px 36px;font-size:.85rem;transition:border-color .2s;}
-.form-control:focus{border-color:#00d4aa;box-shadow:0 0 0 3px rgba(0,212,170,.1);outline:none;}
-.input-icon{position:relative;}
-.input-icon i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:.85rem;}
-.btn-login{background:linear-gradient(135deg,#0096ff,#00d4aa);border:none;border-radius:10px;padding:11px;font-weight:600;font-size:.88rem;color:#fff;width:100%;margin-top:8px;transition:opacity .2s;}
-.btn-login:hover{opacity:.9;}
-.register-link{text-align:center;font-size:.82rem;color:#8a99ab;margin-top:16px;}
-.register-link a{color:#0096ff;font-weight:600;text-decoration:none;}
-.alert{border:none;border-radius:10px;font-size:.82rem;padding:10px 14px;}
-.info-box{background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:20px;border:1px solid #e2e8f0;}
-.info-box p{font-size:.72rem;color:#64748b;margin:0 0 6px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-.info-row{display:flex;justify-content:space-between;font-size:.75rem;color:#374151;margin-bottom:3px;}
-.info-row span:last-child{color:#0096ff;font-weight:600;}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --admin-bg:#eef3fb;   --admin-border:#185fa5;   --admin-text:#0c447c;   --admin-btn:#185fa5;
+  --doctor-bg:#eaf3de;  --doctor-border:#3b6d11;  --doctor-text:#27500a;  --doctor-btn:#3b6d11;
+  --patient-bg:#e1f5ee; --patient-border:#0f6e56; --patient-text:#085041; --patient-btn:#0f6e56;
+  --new-bg:#eeedfe;     --new-border:#534ab7;     --new-text:#3c3489;     --new-btn:#534ab7;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #f0f4f8;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #dce4ee;
+  padding: 36px 32px 32px;
+  width: 100%; max-width: 430px;
+  box-shadow: 0 4px 24px rgba(11,45,78,.07);
+}
+
+.header { text-align: center; margin-bottom: 28px; }
+.logo {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg,#0096ff,#00d4aa);
+  border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 24px; color: #fff; margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(0,150,255,.25);
+}
+.card-title { font-size: 19px; font-weight: 700; color: #0b2d4e; margin-bottom: 3px; }
+.card-sub   { font-size: 13px; color: #6b7a90; }
+
+/* ── Role grid ── */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.rbtn {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 18px 10px; border-radius: 13px;
+  border: 1.5px solid #dce4ee; background: #fff;
+  color: #6b7a90; cursor: pointer;
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  transition: all 0.18s ease; position: relative;
+}
+.rbtn i { font-size: 26px; }
+.rbtn:hover { background: #f5f8fc; border-color: #b0c4de; color: #0b2d4e; transform: translateY(-1px); }
+.rbtn .tick {
+  position: absolute; top: 8px; right: 8px;
+  width: 16px; height: 16px; border-radius: 50%;
+  display: none; align-items: center; justify-content: center;
+  font-size: 9px; color: #fff;
+}
+.rbtn.active-admin   { background:var(--admin-bg);   border-color:var(--admin-border);   color:var(--admin-text);   box-shadow:0 2px 10px rgba(24,95,165,.15); }
+.rbtn.active-doctor  { background:var(--doctor-bg);  border-color:var(--doctor-border);  color:var(--doctor-text);  box-shadow:0 2px 10px rgba(59,109,17,.12); }
+.rbtn.active-patient { background:var(--patient-bg); border-color:var(--patient-border); color:var(--patient-text); box-shadow:0 2px 10px rgba(15,110,86,.12); }
+.rbtn.active-new     { background:var(--new-bg);     border-color:var(--new-border);     color:var(--new-text);     box-shadow:0 2px 10px rgba(83,74,183,.12); }
+.rbtn.active-admin   .tick { display:flex; background:var(--admin-btn); }
+.rbtn.active-doctor  .tick { display:flex; background:var(--doctor-btn); }
+.rbtn.active-patient .tick { display:flex; background:var(--patient-btn); }
+.rbtn.active-new     .tick { display:flex; background:var(--new-btn); }
+
+/* ── Divider ── */
+.divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 22px 0 16px;
+  font-size: 11px; font-weight: 700; color: #9daabe;
+  text-transform: uppercase; letter-spacing: .8px;
+}
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:#dce4ee; }
+
+/* ── Flash messages ── */
+.flash { border-radius: 9px; padding: 10px 13px; font-size: 12.5px; margin-bottom: 14px; display:flex; align-items:center; gap:8px; }
+.flash-danger  { background:#fef2f2; border:1px solid #fca5a5; color:#b91c1c; }
+.flash-success { background:#f0fdf4; border:1px solid #86efac; color:#15803d; }
+.flash-warning { background:#fff8ec; border:1px solid #fcd34d; color:#92400e; }
+
+/* ── Fields ── */
+.fields { display:flex; flex-direction:column; gap:13px; }
+
+.field { display:flex; flex-direction:column; gap:5px; }
+.field label { font-size:12px; font-weight:600; color:#4a5568; }
+
+.input-wrap {
+  display:flex; align-items:center; gap:8px;
+  border:1.5px solid #dce4ee; border-radius:10px;
+  background:#f8fafd; padding:0 12px;
+  transition: border-color .15s, background .15s;
+}
+.input-wrap:focus-within { border-color:#1a7abf; background:#fff; }
+.input-wrap i { font-size:16px; color:#9daabe; flex-shrink:0; }
+.input-wrap input, .input-wrap select {
+  border:none; background:transparent; outline:none;
+  font-size:14px; font-family:inherit; color:#0b2d4e;
+  padding:11px 0; width:100%;
+}
+.input-wrap input::placeholder { color:#b0bac8; }
+.eye-btn { background:none; border:none; cursor:pointer; color:#9daabe; font-size:16px; padding:0; display:flex; }
+
+/* ── Admin warning ── */
+.admin-notice {
+  background:#fff8ec; border:1px solid #f6d86b;
+  border-radius:9px; padding:9px 12px;
+  font-size:11.5px; color:#7a5c00;
+  display:flex; align-items:flex-start; gap:8px; line-height:1.5;
+}
+.admin-notice i { font-size:15px; flex-shrink:0; margin-top:1px; color:#c49000; }
+
+/* ── Lockout banner ── */
+.lockout-banner {
+  background:#fef2f2; border:1px solid #fca5a5;
+  border-radius:9px; padding:10px 12px;
+  font-size:12px; color:#b91c1c;
+  display:none; align-items:center; gap:8px;
+}
+.lockout-banner.show { display:flex; }
+
+/* ── Attempt dots ── */
+.attempt-row { display:flex; align-items:center; justify-content:center; gap:6px; }
+.attempt-row span { font-size:10px; color:#9daabe; }
+.dots { display:flex; gap:4px; }
+.dot { width:7px; height:7px; border-radius:50%; background:#e2e8f0; transition:background .2s; }
+.dot.used { background:#ef4444; }
+
+/* ── Submit ── */
+.submit-btn {
+  width:100%; padding:12px; border-radius:10px; border:none;
+  font-size:14px; font-weight:600; font-family:inherit; color:#fff;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:opacity .15s, transform .1s; margin-top:2px;
+}
+.submit-btn:hover:not(:disabled) { opacity:.88; transform:translateY(-1px); }
+.submit-btn:disabled { opacity:.45; cursor:not-allowed; }
+
+/* ── Role hint ── */
+.role-hint {
+  font-size:11.5px; color:#6b7a90; text-align:center;
+  margin-top:10px; padding:7px 12px;
+  background:#f8fafd; border-radius:8px; border:1px solid #dce4ee;
+  line-height:1.5;
+}
+
+/* ── 2-col row ── */
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 </style>
 </head>
 <body>
-<div class="login-wrap">
-  <div class="login-left">
-    <div class="login-brand">
-      <div class="brand-icon"><i class="fas fa-hospital-alt"></i></div>
-      <div class="brand-name">MediCare HMS</div>
-    </div>
-    <div>
-      <h2>Smart Hospital Management</h2>
-      <p>A complete system to manage patients, doctors, appointments, diagnosis and lab reports.</p>
-      <div class="feature-list">
-        <div class="feature-item"><div class="feature-icon"><i class="fas fa-procedures"></i></div>Patient Registration and Records</div>
-        <div class="feature-item"><div class="feature-icon"><i class="fas fa-calendar-check"></i></div>Appointment Booking</div>
-        <div class="feature-item"><div class="feature-icon"><i class="fas fa-stethoscope"></i></div>Diagnosis Reports</div>
-        <div class="feature-item"><div class="feature-icon"><i class="fas fa-flask"></i></div>Lab Reports</div>
-        <div class="feature-item"><div class="feature-icon"><i class="fas fa-file-invoice-dollar"></i></div>Billing Management</div>
-      </div>
-    </div>
-    <div style="color:rgba(255,255,255,.5);font-size:.72rem;">© 2026 MediCare Hospital</div>
+
+<div class="card">
+  <div class="header">
+    <div class="logo"><i class="ti ti-heart-rate-monitor"></i></div>
+    <div class="card-title">MediCare HMS</div>
+    <div class="card-sub">Select your role to continue</div>
   </div>
 
-  <div class="login-right">
-    <h3>Welcome Back</h3>
-    <p>Enter your phone number to login</p>
+  <!-- Flash messages from Flask -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+          <i class="ti ti-{{ 'alert-circle' if category=='danger' else 'check' }}"></i>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="alert alert-{{ category }} mb-3">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+  <!-- 4 Role buttons -->
+  <div class="role-grid">
+    <button class="rbtn" id="r-admin" onclick="pick('admin')">
+      <span class="tick"><i class="ti ti-check"></i></span>
+      <i class="ti ti-shield-lock"></i>Admin
+    </button>
+    <button class="rbtn" id="r-doctor" onclick="pick('doctor')">
+      <span class="tick"><i class="ti ti-check"></i></span>
+      <i class="ti ti-stethoscope"></i>Doctor
+    </button>
+    <button class="rbtn" id="r-patient" onclick="pick('patient')">
+      <span class="tick"><i class="ti ti-check"></i></span>
+      <i class="ti ti-user-heart"></i>Patient
+    </button>
+    <button class="rbtn" id="r-new" onclick="pick('new')">
+      <span class="tick"><i class="ti ti-check"></i></span>
+      <i class="ti ti-user-plus"></i>New Patient
+    </button>
+  </div>
 
-    <div class="info-box">
-      <p>Staff Login Numbers</p>
-      <div class="info-row"><span>Admin</span><span>9000000000</span></div>
-      <div class="info-row"><span>Receptionist</span><span>9000000001</span></div>
-      <div class="info-row"><span>Doctors</span><span>9876501001 to 9876501010</span></div>
-    </div>
+  <!-- Dynamic form injected here -->
+  <div id="form-area"></div>
+</div>
 
-    <form method="POST">
-      <div class="mb-4">
-        <label class="form-label">Phone Number</label>
-        <div class="input-icon">
-          <i class="fas fa-phone"></i>
-          <input type="text" name="phone" class="form-control" placeholder="Enter your phone number" required>
+<script>
+// ── Brute-force protection (client-side) ──
+var MAX = 5, LOCK_MS = 5 * 60 * 1000;
+var attempts = parseInt(localStorage.getItem('adm_att') || '0');
+var lockUntil = parseInt(localStorage.getItem('adm_lock') || '0');
+
+function locked() {
+  if (Date.now() < lockUntil) return true;
+  if (lockUntil && Date.now() >= lockUntil) {
+    attempts = 0;
+    localStorage.removeItem('adm_att');
+    localStorage.removeItem('adm_lock');
+    lockUntil = 0;
+  }
+  return false;
+}
+
+function recordFail() {
+  attempts++;
+  localStorage.setItem('adm_att', attempts);
+  if (attempts >= MAX) {
+    lockUntil = Date.now() + LOCK_MS;
+    localStorage.setItem('adm_lock', lockUntil);
+  }
+}
+
+function timeLeft() {
+  var s = Math.ceil((lockUntil - Date.now()) / 1000);
+  return Math.floor(s/60) + 'm ' + (s%60 < 10 ? '0' : '') + (s%60) + 's';
+}
+
+// detect failed admin login via query param ?failed=admin
+(function(){
+  var p = new URLSearchParams(location.search);
+  if (p.get('failed') === 'admin') { recordFail(); history.replaceState({}, '', location.pathname); }
+})();
+
+var current = null, cdTimer = null;
+
+var roles = {
+  admin:   { cls:'active-admin',   btn:'#185fa5', action:'/login',    label:'Sign in as Admin',   hint:'🔒 Admin has full system access. Use your secure password.' },
+  doctor:  { cls:'active-doctor',  btn:'#3b6d11', action:'/login',    label:'Sign in as Doctor',  hint:'👨‍⚕️ Enter the phone number registered with your doctor account.' },
+  patient: { cls:'active-patient', btn:'#0f6e56', action:'/login',    label:'Sign in as Patient', hint:'🏥 Enter the phone number you used when registering.' },
+  new:     { cls:'active-new',     btn:'#534ab7', action:'/register', label:'Create Account',     hint:'✨ Register as a new patient. Your phone number will be your login ID.' }
+};
+
+function formHTML(role) {
+  if (role === 'admin') {
+    var isLocked = locked();
+    var dots = '';
+    for (var i = 0; i < MAX; i++)
+      dots += '<div class="dot' + (i < attempts ? ' used' : '') + '"></div>';
+    return `
+      <div class="lockout-banner ${isLocked ? 'show' : ''}" id="lockout-banner">
+        <i class="ti ti-lock-exclamation"></i>
+        <span>Too many failed attempts. Try again in <strong id="cd">${isLocked ? timeLeft() : ''}</strong></span>
+      </div>
+      <div class="admin-notice">
+        <i class="ti ti-alert-triangle"></i>
+        <span>Admin access is restricted. Account locks after <strong>5 failed attempts</strong> for 5 minutes.</span>
+      </div>
+      <div class="field">
+        <label>Admin Password</label>
+        <div class="input-wrap">
+          <i class="ti ti-lock"></i>
+          <input type="password" id="pw" name="password" placeholder="Enter admin password"
+            ${isLocked ? 'disabled' : ''} autocomplete="current-password" required/>
+          <button type="button" class="eye-btn" onclick="toggleEye()"><i class="ti ti-eye" id="eye-icon"></i></button>
         </div>
       </div>
-      <button type="submit" class="btn-login">
-        <i class="fas fa-sign-in-alt me-2"></i>Login
+      <input type="hidden" name="phone" value="9000000000"/>
+      <div class="attempt-row">
+        <span>Attempts</span>
+        <div class="dots" id="dots">${dots}</div>
+        <span>${attempts}/${MAX}</span>
+      </div>`;
+  }
+
+  if (role === 'doctor' || role === 'patient') {
+    return `
+      <div class="field">
+        <label>Registered Phone Number</label>
+        <div class="input-wrap">
+          <i class="ti ti-phone"></i>
+          <input type="tel" name="phone" placeholder="Enter your phone number" autocomplete="tel" required/>
+        </div>
+      </div>`;
+  }
+
+  // new patient
+  return `
+    <div class="field">
+      <label>Full Name *</label>
+      <div class="input-wrap">
+        <i class="ti ti-user"></i>
+        <input type="text" name="name" placeholder="As per your ID" required/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Phone Number * <span style="color:#9daabe;font-weight:400;">(used to login)</span></label>
+      <div class="input-wrap">
+        <i class="ti ti-phone"></i>
+        <input type="tel" name="phone" placeholder="10-digit mobile number" required/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Email <span style="color:#9daabe;font-weight:400;">(optional)</span></label>
+      <div class="input-wrap">
+        <i class="ti ti-mail"></i>
+        <input type="email" name="email" placeholder="your@email.com"/>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Age *</label>
+        <div class="input-wrap">
+          <i class="ti ti-calendar"></i>
+          <input type="number" name="age" placeholder="Age" min="0" max="120" required/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Gender *</label>
+        <div class="input-wrap" style="padding:0 8px;">
+          <i class="ti ti-gender-bigender"></i>
+          <select name="gender" required style="border:none;background:transparent;outline:none;font-size:14px;font-family:inherit;color:#0b2d4e;padding:11px 0;width:100%;cursor:pointer;">
+            <option value="">Select</option>
+            <option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Blood Group</label>
+        <div class="input-wrap" style="padding:0 8px;">
+          <i class="ti ti-droplet"></i>
+          <select name="blood_group" style="border:none;background:transparent;outline:none;font-size:14px;font-family:inherit;color:#0b2d4e;padding:11px 0;width:100%;cursor:pointer;">
+            <option value="">Unknown</option>
+            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Address *</label>
+        <div class="input-wrap">
+          <i class="ti ti-map-pin"></i>
+          <input type="text" name="address" placeholder="City / Area" required/>
+        </div>
+      </div>
+    </div>`;
+}
+
+function pick(role) {
+  if (current) document.getElementById('r-' + current).className = 'rbtn';
+  document.getElementById('r-' + role).className = 'rbtn ' + roles[role].cls;
+  current = role;
+
+  var cfg = roles[role];
+  var isLocked = role === 'admin' && locked();
+
+  document.getElementById('form-area').innerHTML = `
+    <div class="divider"><span>${role === 'new' ? 'Create Account' : 'Sign In'}</span></div>
+    <form method="POST" action="${cfg.action}" class="fields" onsubmit="return onSubmit(event,'${role}')">
+      ${formHTML(role)}
+      <button type="submit" class="submit-btn" style="background:${cfg.btn}" ${isLocked ? 'disabled' : ''}>
+        <i class="ti ti-${role === 'new' ? 'user-check' : 'login'}"></i>
+        <span>${cfg.label}</span>
       </button>
     </form>
+    <div class="role-hint">${cfg.hint}</div>
+  `;
 
-    <div class="register-link">
-      New patient? <a href="{{ url_for('register') }}">Register here</a>
-    </div>
-  </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  if (role === 'admin' && isLocked) startCD();
+}
+
+function onSubmit(e, role) {
+  if (role === 'admin' && locked()) { e.preventDefault(); return false; }
+  return true;
+}
+
+function toggleEye() {
+  var inp = document.getElementById('pw');
+  var ico = document.getElementById('eye-icon');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  ico.className = 'ti ti-eye' + (inp.type === 'text' ? '-off' : '');
+}
+
+function startCD() {
+  if (cdTimer) clearInterval(cdTimer);
+  cdTimer = setInterval(function() {
+    if (!locked()) { clearInterval(cdTimer); pick('admin'); return; }
+    var el = document.getElementById('cd');
+    if (el) el.textContent = timeLeft();
+  }, 1000);
+}
+</script>
+
 </body>
 </html>
